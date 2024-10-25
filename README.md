@@ -1,2 +1,1 @@
-# DbiUebung-001
-Entity Framework
+# DbiUebung-001 -- Entity Framework
