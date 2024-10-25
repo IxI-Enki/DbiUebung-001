@@ -1,15 +1,22 @@
-﻿
-using Oracle.ManagedDataAccess.Client;
+﻿using Oracle.ManagedDataAccess.Client;
 
 namespace EntityFramework.ConApp;
 
-public static class RandomGenThrSafe
+/// <summary>
+///  A thread-safe random-integer generator 
+/// </summary>
+public static class RandomGenerator_ThreadSafe
 {
   #region FIELDS
   private readonly static Random _inst = new();
   #endregion
 
   #region METHODS
+  /// <summary>
+  ///  Returns a random integer between 0 and the limit
+  /// </summary>
+  /// <param name="limit"></param>
+  /// <returns>random int</returns>
   public static int Next(int limit)
   {
     lock (_inst)
@@ -18,16 +25,34 @@ public static class RandomGenThrSafe
   #endregion
 }
 
+
 internal class Program
 {
+  #region FIELDS
   private static readonly object _locker = new();
+  private static int _testToRun = 1;
+  #endregion
 
+  /// <summary>
+  /// Entrypoint of the Program
+  /// </summary>
   static void Main()
   {
-    // Anzahl der gleichzeitigen Aufrufe kann hier eingestellt werden
-    const int numberOfParallelThreads = 5;
+    Console.Write
+      (
+        "_____Oracle Database Assignment - Locking_____\n\n" +
+        "Enter the amount of Threads to use: "
+      );
+    Thread[ ] threads = new Thread[ GetThreadAmountFromUser() ];
 
-    Thread[ ] threads = new Thread[ numberOfParallelThreads ];
+    Console.Write
+      (
+        "Which test would you like to run?\n" +
+        "1 - Transfer Money from King to Herbert\n" +
+        "2 - Transfer Money randomly \n"
+      );
+    _testToRun = GetTestChoiceFromUser();
+
     for (int i = 0 ; i < threads.Length ; i++)
     {
       threads[ i ] = new(ExecuteTests!);
@@ -38,30 +63,67 @@ internal class Program
     for (int i = 0 ; i < threads.Length ; i++)
       threads[ i ].Join();
 
-    Console.WriteLine("All threads have finished.");
+    Console.Write("All threads have finished.");
   }
+
+  private static int GetTestChoiceFromUser()
+    => int.TryParse(Console.ReadLine() , out int outPut) ?
+        outPut == 1 ? 1
+      : outPut == 2 ? 2
+      : outPut > 2 ? 2
+      : outPut < 1 ? 1
+      : 1
+      : 1;
+  private static int GetThreadAmountFromUser()
+    => int.TryParse(Console.ReadLine() , out int amountOfThreads) ? amountOfThreads : 1;
+
 
   static void ExecuteTests(object thrIdx)
   {
     string connectString
-      = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=FREEPDB1)));User Id=system;Password=dbi2425;";
+      = "Data Source=(" +
+          "DESCRIPTION=(ADDRESS_LIST=(" +
+            "ADDRESS=(PROTOCOL=TCP)" +
+              "(HOST=localhost)" +
+              "(PORT=1521)))(" +
+            "CONNECT_DATA=(SERVER=DEDICATED)" +
+        "(SERVICE_NAME=FREEPDB1)));" +
+        "User Id=system;" +
+        "Password=dbi2425;";
 
     try
     {
       using OracleConnection oc = new(connectString);
       oc.Open();
-
-      // Uncomment the test you would like to execute below
-      // TestTransferMoneyFromKingToHerbert(oc);
-      TestTransferMoneyRandom(oc);
-
+      ChooseTest(oc);
       oc.Close();
     }
     catch (OracleException e)
     {
-      Console.WriteLine(e.Message);
-      Console.WriteLine(e.StackTrace);
+      ThrowFailOutput(e);
     }
+  }
+
+  private static void ChooseTest(OracleConnection oc)
+  {
+    switch (_testToRun)
+    {
+      case 1:
+        TestTransferMoneyFromKingToHerbert(oc);
+        break;
+      case 2:
+        TestTransferMoneyRandom(oc);
+        break;
+    }
+  }
+  private static void ThrowFailOutput(OracleException e)
+  {
+    Console.BackgroundColor = ConsoleColor.Red;
+    Console.ForegroundColor = ConsoleColor.Black;
+    Console.Write("\n_____ FAIL _____\n");
+    Console.ResetColor();
+    Console.WriteLine(e.Message);
+    Console.WriteLine(e.StackTrace);
   }
 
   static void TestTransferMoneyRandom(OracleConnection oc)
@@ -69,9 +131,9 @@ internal class Program
     for (int i = 0 ; i < 1000 ; i++)
     {
       int
-        dest = RandomGenThrSafe.Next(4),
-        source = RandomGenThrSafe.Next(4),
-        difference = RandomGenThrSafe.Next(1000000);
+        dest = RandomGenerator_ThreadSafe.Next(4),
+        source = RandomGenerator_ThreadSafe.Next(4),
+        difference = RandomGenerator_ThreadSafe.Next(1000000);
 
       TransferMoney(oc , source , dest , difference);
 
@@ -91,7 +153,7 @@ internal class Program
   static int CalculateNewBalance(int kontoBalance , int amount)
   {
     //Expensive computation
-    Thread.Sleep(RandomGenThrSafe.Next(25));
+    Thread.Sleep(RandomGenerator_ThreadSafe.Next(25));
     return kontoBalance - amount;
   }
 
@@ -120,6 +182,7 @@ internal class Program
 
           if (sourceBalance < 0)
             throw new Exception("this should not happen!!!");
+
           int newBalance = CalculateNewBalance(sourceBalance , amount);
 
           if (newBalance > 0)
@@ -143,9 +206,8 @@ internal class Program
           txn.Rollback();
           Console.WriteLine(e.Message);
         }
-
-        return false;
       }
+      return false;
     }
   }
 }
