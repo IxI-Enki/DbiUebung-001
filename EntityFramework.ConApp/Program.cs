@@ -27,7 +27,7 @@ public static class RandomGenerator_ThreadSafe
 internal class Program
 {
   #region FIELDS
-  private static readonly object _locker = new();
+  private static readonly object _locker = new();  // lock-object to ensure save code execution
   private static int _testToRun = 1;
   #endregion
 
@@ -109,7 +109,13 @@ internal class Program
   static void ExecuteTests(object thrIdx)
   {
     string connectString
-      = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=FREEPDB1)));User Id=system;Password=dbi2425;";
+      = "Data Source=(" +
+      "DESCRIPTION=(" +
+      "ADDRESS_LIST=(" +
+      "ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))" +
+      "(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=FREEPDB1)));" +
+      "User Id=system;" +
+      "Password=dbi2425;";
 
     try
     {
@@ -168,8 +174,8 @@ internal class Program
           OracleCommand cmd = oc.CreateCommand();
           int sourceBalance = -1;
 
-          // Query mit einer Ergebniszeile
-          cmd.CommandText = "SELECT balance FROM konto WHERE kid=" + source + " FOR UPDATE";
+          // Query with one resulting line
+          cmd.CommandText = "SELECT balance FROM konto WHERE kid=" + source + " FOR UPDATE";  //  Line-Lock - for Update
 
           OracleDataReader reader = cmd.ExecuteReader();
           if (reader.Read())
