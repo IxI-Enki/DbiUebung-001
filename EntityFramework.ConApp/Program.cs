@@ -1,5 +1,4 @@
 ﻿using Oracle.ManagedDataAccess.Client;
-
 namespace EntityFramework.ConApp;
 
 /// <summary>
@@ -25,7 +24,6 @@ public static class RandomGenerator_ThreadSafe
   #endregion
 }
 
-
 internal class Program
 {
   #region FIELDS
@@ -38,76 +36,52 @@ internal class Program
   /// </summary>
   static void Main()
   {
-    Console.Write
-      (
-        "_____Oracle Database Assignment - Locking_____\n\n" +
-        "Enter the amount of Threads to use: "
-      );
-    Thread[ ] threads = new Thread[ GetThreadAmountFromUser() ];
-
-    Console.Write
-      (
-        "Which test would you like to run?\n" +
-        "1 - Transfer Money from King to Herbert\n" +
-        "2 - Transfer Money randomly \n"
-      );
-    _testToRun = GetTestChoiceFromUser();
-
-    for (int i = 0 ; i < threads.Length ; i++)
+    while (_testToRun != 0)
     {
-      threads[ i ] = new(ExecuteTests!);
-      threads[ i ].Start(i);
+      Console.Write
+        (
+          "\n\n" +
+          "_____Oracle Database Assignment - Locking_____\n\n" +
+          "Enter the amount of Threads to use: "
+        );
+      Thread[ ] threads = new Thread[ GetThreadAmountFromUser() ];
+
+      Console.Write
+        (
+          "Which test would you like to run?\n" +
+          "1 - Transfer Money from King to Herbert\n" +
+          "2 - Transfer Money randomly\n" +
+          "0 - Exit\n"
+        );
+
+      _testToRun = GetTestChoiceFromUser();
+      for (int i = 0 ; i < threads.Length ; i++)
+      {
+        threads[ i ] = new(ExecuteTests!);
+        threads[ i ].Start(i);
+      }
+
+      // Wait for all threads to finish
+      for (int i = 0 ; i < threads.Length ; i++)
+        threads[ i ].Join();
+
+      Console.Write("All threads have finished.");
     }
-
-    // Wait for all threads to finish
-    for (int i = 0 ; i < threads.Length ; i++)
-      threads[ i ].Join();
-
-    Console.Write("All threads have finished.");
+    if (_testToRun == 0)
+      Console.WriteLine("Exit App");
   }
 
+  #region PRIVATE HELPER METHODS
   private static int GetTestChoiceFromUser()
     => int.TryParse(Console.ReadLine() , out int outPut) ?
         outPut == 1 ? 1
       : outPut == 2 ? 2
       : outPut > 2 ? 2
-      : outPut < 1 ? 1
+      : outPut <= 0 ? 0
       : 1
       : 1;
   private static int GetThreadAmountFromUser()
     => int.TryParse(Console.ReadLine() , out int amountOfThreads) ? amountOfThreads : 1;
-
-
-  static void ExecuteTests(object thrIdx)
-  {
-    string connectString
-<<<<<<< HEAD
-      = "Data Source=(" +
-          "DESCRIPTION=(ADDRESS_LIST=(" +
-            "ADDRESS=(PROTOCOL=TCP)" +
-              "(HOST=localhost)" +
-              "(PORT=1521)))(" +
-            "CONNECT_DATA=(SERVER=DEDICATED)" +
-        "(SERVICE_NAME=FREEPDB1)));" +
-        "User Id=system;" +
-        "Password=dbi2425;";
-=======
-      = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=FREEPDB1)));User Id=system;Password=XXXXXX;";
->>>>>>> 3f388874c3137269dde4d650341afee6c27fa467
-
-    try
-    {
-      using OracleConnection oc = new(connectString);
-      oc.Open();
-      ChooseTest(oc);
-      oc.Close();
-    }
-    catch (OracleException e)
-    {
-      ThrowFailOutput(e);
-    }
-  }
-
   private static void ChooseTest(OracleConnection oc)
   {
     switch (_testToRun)
@@ -128,6 +102,26 @@ internal class Program
     Console.ResetColor();
     Console.WriteLine(e.Message);
     Console.WriteLine(e.StackTrace);
+  }
+  #endregion
+
+  #region BUSINESS METHODS
+  static void ExecuteTests(object thrIdx)
+  {
+    string connectString
+      = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=FREEPDB1)));User Id=system;Password=dbi2425;";
+
+    try
+    {
+      using OracleConnection oc = new(connectString);
+      oc.Open();
+      ChooseTest(oc);
+      oc.Close();
+    }
+    catch (OracleException e)
+    {
+      ThrowFailOutput(e);
+    }
   }
 
   static void TestTransferMoneyRandom(OracleConnection oc)
@@ -214,4 +208,5 @@ internal class Program
       return false;
     }
   }
+  #endregion
 }
