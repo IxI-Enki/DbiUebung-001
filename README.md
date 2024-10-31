@@ -21,3 +21,9 @@
   ![tableLock](image.png)
     > (auch bei vielen parallellen Threads, stimmen die Transaktionen und blockieren sich nun nichtmehr)  
  
+---  
+
+#### - Running 6 parallel Threads:
+  > ###### (And query in oracle after all threads finished)  
+
+![executionScreenshot](<Screenshot 2024-10-31 090417.png>)
