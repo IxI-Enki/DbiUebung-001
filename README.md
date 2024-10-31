@@ -17,7 +17,7 @@
   ![lineLock](image-1.png)  
 - sowie eine Lock-variable _locker zum code hinzu:  
   ![lockObject](image-2.png)
-- Als letzte Maßnahme erweiterte ich den code um einen Vollständigen Table-lock, welcher die deadlocks letztendlich verhindert:  
+- Als letzte Maßnahme erweiterte ich den code um einen vollständigen Table-lock, welcher die deadlocks letztendlich verhindert:  
   ![tableLock](image.png)
     > (auch bei vielen parallellen Threads, stimmen die Transaktionen und blockieren sich nun nichtmehr)  
  
