@@ -8,16 +8,16 @@
 > - Table-Lock
 > - Optimistisches Locking
 
----   
+---    
 
 - Bei nur einem Thread verhält sich der code wie erwartet, jedes query wird nacheinander abgearbeitet,  
   bei mehreren parallelen Threads können jetzt bereits Probleme auftreten.
   > Ein Zeilen-Lock scheint deadlocks nicht zu verhindern und selbst mit dem lock-object im c# code, treten ab und zu deadlocks auf (je nach cpu auslastung)
 - Ich fügte, wie bereits genannt "FOR UPDATE":  
-  ![forUpdate](https://github.com/user-attachments/assets/33e90627-a8b1-4cde-a929-2c4b6d920bdb)  
+  ![lineLock](image-1.png)  
 - sowie eine Lock-variable _locker zum code hinzu:  
-  ![lockObject](https://github.com/user-attachments/assets/cc627d33-60d7-43dd-af93-13f8a4a0d2fd)  
+  ![lockObject](image-2.png)
 - Als letzte Maßnahme erweiterte ich den code um einen Vollständigen Table-lock, welcher die deadlocks letztendlich verhindert:  
-  > (auch bei vielen parallellen Threads, stimmen die Transaktionen und blockieren sich nun nichtmehr)  
-  ![tableLock](https://github.com/user-attachments/assets/5ff19486-0f39-487e-a942-0dc993e72ede)  
+  ![tableLock](image.png)
+    > (auch bei vielen parallellen Threads, stimmen die Transaktionen und blockieren sich nun nichtmehr)  
  
