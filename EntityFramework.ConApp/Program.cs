@@ -185,6 +185,9 @@ internal class Program
 
           if (newBalance > 0)
           {
+            cmd.CommandText = "LOCK TABLE konto IN EXCLUSIVE MODE";   // Table lock - to prevent deadlocks 
+            cmd.ExecuteNonQuery();                                  // while running multiple threads parallel
+
             cmd.CommandText = "UPDATE konto SET balance = " + newBalance + " WHERE kid=" + source;
 
             // Anzahl der veränderten Zeilen
