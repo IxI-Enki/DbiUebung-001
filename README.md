@@ -1,4 +1,4 @@
-# DbiUebung-001 -- Entity Framework
+# DbiUebung-001 -- Oracle (not Entity) Framework
 
 > ###### Todo:
 > ##### Führen Sie die Tests mit numberOfParallelThreads=1 aus. Verhält sich der Code wie erwartet?  
