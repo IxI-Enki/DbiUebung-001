@@ -129,7 +129,6 @@ internal class Program
       ThrowFailOutput(e);
     }
   }
-
   static void TestTransferMoneyRandom(OracleConnection oc)
   {
     for (int i = 0 ; i < 1000 ; i++)
@@ -144,7 +143,6 @@ internal class Program
       Console.Write("Random transfered Money, times: " + i + "\n");
     }
   }
-
   static void TestTransferMoneyFromKingToHerbert(OracleConnection oc)
   {
     for (int i = 0 ; i < 1000 ; i++)
@@ -153,14 +151,12 @@ internal class Program
       Console.Write("Transfered Money, times: " + i + "\n");
     }
   }
-
   static int CalculateNewBalance(int kontoBalance , int amount)
   {
     //Expensive computation
     Thread.Sleep(RandomGenerator_ThreadSafe.Next(25));
     return kontoBalance - amount;
   }
-
   static bool TransferMoney(OracleConnection oc , int source , int dest , int amount)
   {
     lock (_locker)

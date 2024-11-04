@@ -33,3 +33,7 @@
 
 ### Program ran through, with 10 parallel threads:  
  ![ecexutionScreenshot](execution-2.png)
+
+---  
+> ###### Quick overview of the code
+![c#CodeOverview](image-5.png)
