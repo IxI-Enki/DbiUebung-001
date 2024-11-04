@@ -20,15 +20,16 @@
 - Als letzte Maßnahme erweiterte ich den code um einen vollständigen Table-lock, welcher die deadlocks letztendlich verhindert:  
   ![tableLock](image.png)
     > (auch bei vielen parallellen Threads, stimmen die Transaktionen und blockieren sich nun nichtmehr)  
- 
- --- 
-
- ![ecexutionScreenshot](execution-2.png)
 
  ---  
 
-- OPTIMISTIC "Locking":  
-  ![optimisticLocking](https://github.com/user-attachments/assets/e515e4e1-feb9-4dd2-8d23-42dda0b1f22e)  
- 
-- PESIMISTIC Locking:  
-  ![pesimisticLocking](https://github.com/user-attachments/assets/878eb42f-3144-4a5a-9a96-1171bb67d552)   
+- OPTIMISTIC "Locking":   
+ ![optimisticLocking](image-4.png)  
+
+- PESIMISTIC Locking:   
+  ![pesimisticLocking](image-3.png)  
+
+ --- 
+
+### Program ran through, with 10 parallel threads:  
+ ![ecexutionScreenshot](execution-2.png)
