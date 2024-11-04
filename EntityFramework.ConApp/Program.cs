@@ -191,16 +191,19 @@ internal class Program
 
           if (newBalance > 0)
           {
+            // Pesimistic locking: Lock the whole Table
             cmd.CommandText = "LOCK TABLE konto IN EXCLUSIVE MODE";   // Table lock - to prevent deadlocks 
             cmd.ExecuteNonQuery();                                  // while running multiple threads parallel
 
             cmd.CommandText = "UPDATE konto SET balance = " + newBalance + " WHERE kid=" + source;
 
-            // Anzahl der veränderten Zeilen
+            // Optimistic "locking": Number of changed lines == 0
             int modifiedRows = cmd.ExecuteNonQuery();
-
-            cmd.CommandText = "UPDATE konto SET balance = balance + " + amount + " WHERE kid=" + dest;
-            cmd.ExecuteNonQuery();
+            if (modifiedRows == 0)
+            {
+              cmd.CommandText = "UPDATE konto SET balance = balance + " + amount + " WHERE kid=" + dest;
+              cmd.ExecuteNonQuery();
+            }
 
             txn.Commit();
             return true;
