@@ -24,3 +24,11 @@
  --- 
 
  ![ecexutionScreenshot](execution-2.png)
+
+ ---  
+
+- OPTIMISTIC "Locking":  
+  ![optimisticLocking](https://github.com/user-attachments/assets/e515e4e1-feb9-4dd2-8d23-42dda0b1f22e)  
+ 
+- PESIMISTIC Locking:  
+  ![pesimisticLocking](https://github.com/user-attachments/assets/878eb42f-3144-4a5a-9a96-1171bb67d552)   
