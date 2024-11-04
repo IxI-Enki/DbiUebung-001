@@ -200,11 +200,9 @@ internal class Program
               cmd.CommandText = "UPDATE konto SET balance = balance + " + amount + " WHERE kid=" + dest;
               cmd.ExecuteNonQuery();
             }
-
             txn.Commit();
             return true;
           }
-
           txn.Rollback();
         }
         catch (Exception e)

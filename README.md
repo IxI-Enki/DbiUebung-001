@@ -36,4 +36,8 @@
 
 ---  
 > ###### Quick overview of the code
-![c#CodeOverview](image-5.png)
+![c#CodeOverview](image-5.png)  
+
+--- 
+> ###### Main calculation  
+![alt text](image-6.png)  
