@@ -1,4 +1,4 @@
-# DbiUebung-001 -- Entity Framework
+# DbiUebung-001 -- Oracle (not Entity) Framework
 
 > ###### Todo:
 > ##### Führen Sie die Tests mit numberOfParallelThreads=1 aus. Verhält sich der Code wie erwartet?  
@@ -17,10 +17,18 @@
   ![lineLock](image-1.png)  
 - sowie eine Lock-variable _locker zum code hinzu:  
   ![lockObject](image-2.png)
-- Als letzte Maßnahme erweiterte ich den code um einen Vollständigen Table-lock, welcher die deadlocks letztendlich verhindert:  
+- Als letzte Maßnahme erweiterte ich den code um einen vollständigen Table-lock, welcher die deadlocks letztendlich verhindert:  
   ![tableLock](image.png)
     > (auch bei vielen parallellen Threads, stimmen die Transaktionen und blockieren sich nun nichtmehr)  
  
  --- 
 
  ![ecexutionScreenshot](execution-2.png)
+
+ ---  
+
+- OPTIMISTIC "Locking":  
+  ![optimisticLocking](https://github.com/user-attachments/assets/e515e4e1-feb9-4dd2-8d23-42dda0b1f22e)  
+ 
+- PESIMISTIC Locking:  
+  ![pesimisticLocking](https://github.com/user-attachments/assets/878eb42f-3144-4a5a-9a96-1171bb67d552)   
