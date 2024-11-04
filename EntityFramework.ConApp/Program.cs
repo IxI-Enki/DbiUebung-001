@@ -164,7 +164,6 @@ internal class Program
       if (source != dest)
       {
         OracleTransaction txn = oc.BeginTransaction();
-
         try
         {
           OracleCommand cmd = oc.CreateCommand();
@@ -199,9 +198,9 @@ internal class Program
             {
               cmd.CommandText = "UPDATE konto SET balance = balance + " + amount + " WHERE kid=" + dest;
               cmd.ExecuteNonQuery();
+              txn.Commit();
+              return true;
             }
-            txn.Commit();
-            return true;
           }
           txn.Rollback();
         }

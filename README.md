@@ -40,4 +40,4 @@
 
 --- 
 > ###### Main calculation  
-![alt text](image-6.png)  
+![actualCalculation](image-6.png)
